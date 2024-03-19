@@ -29,7 +29,7 @@ const (
 
 func TestSampleMappingCreatedSuccessfully(t *testing.T) {
 	mock, repo := setUpSampleRepoTest()
-	deliveryPartner := models.SampleMapping{
+	sampleMapping := models.SampleMapping{
 		CustomerSegment: testSegment,
 		ProductID:       testProductID,
 		SampleProductID: testSampleProductID,
@@ -40,7 +40,7 @@ func TestSampleMappingCreatedSuccessfully(t *testing.T) {
 		AddRow(1, testSegment, testProductID, testSampleProductID)
 	mock.ExpectQuery("INSERT INTO \"sample_mappings\"").WillReturnRows(rows)
 	mock.ExpectCommit()
-	res, err := repo.Save(&deliveryPartner)
+	res, err := repo.Save(&sampleMapping)
 
 	if err != nil {
 		t.Fatalf("Error not expected but encountered: %v", err)
