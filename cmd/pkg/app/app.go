@@ -6,26 +6,32 @@ import (
 	"log"
 	"net"
 
-	api "github.com/Mehak2716/sample-manager/internal/apis"
-	configstore "github.com/Mehak2716/sample-manager/internal/config"
+	"github.com/Mehak2716/sample-manager/internal/config"
+	"github.com/Mehak2716/sample-manager/internal/repository"
+	server "github.com/Mehak2716/sample-manager/internal/server"
+	"github.com/Mehak2716/sample-manager/internal/services"
 	"github.com/swiggy-private/gocommons/grpc"
 
 	samplev1 "github.com/Mehak2716/sample-manager-proto/v1"
 )
 
+const grpcPort uint32 = 8090
+
 func Start(ctx context.Context, errch chan<- error) {
 
-	configstore.Initialize()
-
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", configstore.Get().GrpcPort))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%v", grpcPort))
 	if err != nil {
 		log.Fatalf("Failed to start server %v", err)
 	}
-	log.Printf("Listening on %v", configstore.Get().GrpcPort)
+	log.Printf("Listening on %v", grpcPort)
 
 	// Setup grpc server
 	grpcServer := grpc.NewServer()
-	sampleManagerServer := api.SampleManagerServer{}
+	db := config.DatabaseConnection()
+	sampleRepo := repository.SampleRepository{DB: db}
+	sampleService := services.SampleService{Repo: sampleRepo}
+	sampleManagerServer := server.NewSampleManagerServer(sampleService)
+
 	samplev1.RegisterSampleManagerServer(grpcServer, sampleManagerServer)
 
 	if err := grpcServer.Serve(lis); err != nil {
