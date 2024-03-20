@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
-	github.com/Mehak2716/sample-manager-proto v0.0.0-20240319151228-9dec381aa4b1 // indirect
+	github.com/Mehak2716/sample-manager-proto v0.0.0-20240320070059-ba853b934210 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cep21/circuit/v3 v3.2.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect

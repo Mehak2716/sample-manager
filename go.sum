@@ -6,6 +6,8 @@ github.com/Mehak2716/sample-manager-proto v0.0.0-20240319115730-1c397f2968c8 h1:
 github.com/Mehak2716/sample-manager-proto v0.0.0-20240319115730-1c397f2968c8/go.mod h1:XXFc/e7Xp7zZ1ORfMIS281nb7LqJbfte+Q/vg6EdIQY=
 github.com/Mehak2716/sample-manager-proto v0.0.0-20240319151228-9dec381aa4b1 h1:nWbdbLU5+PBNuuo0OFb050pKAzCtBEF2RlOndWIi4Io=
 github.com/Mehak2716/sample-manager-proto v0.0.0-20240319151228-9dec381aa4b1/go.mod h1:XXFc/e7Xp7zZ1ORfMIS281nb7LqJbfte+Q/vg6EdIQY=
+github.com/Mehak2716/sample-manager-proto v0.0.0-20240320070059-ba853b934210 h1:m89bbminTZlRiiuhL4S+A3jv6GxW7J9LVu//c7iIdqg=
+github.com/Mehak2716/sample-manager-proto v0.0.0-20240320070059-ba853b934210/go.mod h1:XXFc/e7Xp7zZ1ORfMIS281nb7LqJbfte+Q/vg6EdIQY=
 github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia65gfNATL8TAiHDNxPzPdmEL5uirI2Uyuz6c=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=

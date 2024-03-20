@@ -30,3 +30,20 @@ func (service *SampleService) CreateMapping(req *samplev1.SampleMappingRequest) 
 	response := mapper.MapToSampleMappingResponse(createdSampleMapping)
 	return response, nil
 }
+
+func (service *SampleService) GetSampleSKUs(req *samplev1.GetSampleIDsRequest) (*samplev1.GetSampleIDsResponse, error) {
+
+	segments := req.CustomerSegments
+	productIDS := req.ProductIDs
+
+	sampleMappings, err := service.Repo.GetSampleIDS(segments, productIDS)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to get samples")
+	}
+
+	response := mapper.MapToSampleIDSResponse(sampleMappings)
+	return response, nil
+
+	return response, nil
+
+}

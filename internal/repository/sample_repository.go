@@ -28,3 +28,19 @@ func (repo *SampleRepository) IsExists(customerSegment string, productID string)
 
 	return count > 0
 }
+
+func (repo *SampleRepository) GetSampleIDS(customerSegments []string, productIDs []string) ([]*models.SampleMapping, error) {
+
+	query := `SELECT product_id,sample_product_id,customer_segment,id
+	          FROM (SELECT  product_id, sample_product_id,customer_segment,
+			  ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY id) AS rn,id
+	          FROM sample_mappings WHERE customer_segment IN (?) AND product_id IN (?))
+	          AS subquery WHERE rn = 1`
+
+	var sampleMappings []*models.SampleMapping
+	if err := repo.DB.Raw(query, customerSegments, productIDs).Scan(&sampleMappings).Error; err != nil {
+		return nil, err
+	}
+	return sampleMappings, nil
+
+}

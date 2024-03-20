@@ -22,3 +22,8 @@ func (server *SampleManagerServer) CreateSampleMapping(ctx context.Context, req 
 
 	return server.sampleService.CreateMapping(req)
 }
+
+func (server *SampleManagerServer) GetSampleSKUs(ctx context.Context, req *samplev1.GetSampleIDsRequest) (*samplev1.GetSampleIDsResponse, error) {
+
+	return server.sampleService.GetSampleSKUs(req)
+}

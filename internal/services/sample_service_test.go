@@ -27,8 +27,8 @@ func setUpSampleServiceTest() (sqlmock.Sqlmock, *SampleService) {
 
 const (
 	testSegment         string = "customer_segment"
-	testProductID       string = "aaaaa"
-	testSampleProductID string = "aaaa"
+	testProductID       string = "xxxxx"
+	testSampleProductID string = "xxxxx"
 )
 
 func TestCreatedSampleMappingSuccessfully(t *testing.T) {

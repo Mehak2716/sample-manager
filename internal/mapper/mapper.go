@@ -23,3 +23,15 @@ func MapToSampleMappingResponse(sampleMapping *models.SampleMapping) *samplev1.S
 		SampleProductID: sampleMapping.SampleProductID,
 	}
 }
+
+func MapToSampleIDSResponse(sampleMappings []*models.SampleMapping) *samplev1.GetSampleIDsResponse {
+
+	var sampleIDs []string
+	for _, mapping := range sampleMappings {
+		sampleIDs = append(sampleIDs, mapping.SampleProductID)
+	}
+
+	return &samplev1.GetSampleIDsResponse{
+		SampleIDs: sampleIDs,
+	}
+}
