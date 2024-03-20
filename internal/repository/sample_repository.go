@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/Mehak2716/sample-manager/internal/models"
 	"gorm.io/gorm"
 )
@@ -13,7 +11,6 @@ type SampleRepository struct {
 
 func (repo *SampleRepository) Save(sampleMapping *models.SampleMapping) (*models.SampleMapping, error) {
 	res := repo.DB.Create(sampleMapping)
-	fmt.Println(sampleMapping)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -29,7 +26,7 @@ func (repo *SampleRepository) IsExists(customerSegment string, productID string)
 	return count > 0
 }
 
-func (repo *SampleRepository) GetSampleIDS(customerSegments []string, productIDs []string) ([]*models.SampleMapping, error) {
+func (repo *SampleRepository) FetchSampleIDs(customerSegments []string, productIDs []string) ([]models.SampleMapping, error) {
 
 	query := `SELECT product_id,sample_product_id,customer_segment,id
 	          FROM (SELECT  product_id, sample_product_id,customer_segment,
@@ -37,10 +34,11 @@ func (repo *SampleRepository) GetSampleIDS(customerSegments []string, productIDs
 	          FROM sample_mappings WHERE customer_segment IN (?) AND product_id IN (?))
 	          AS subquery WHERE rn = 1`
 
-	var sampleMappings []*models.SampleMapping
+	var sampleMappings []models.SampleMapping
 	if err := repo.DB.Raw(query, customerSegments, productIDs).Scan(&sampleMappings).Error; err != nil {
 		return nil, err
 	}
+
 	return sampleMappings, nil
 
 }

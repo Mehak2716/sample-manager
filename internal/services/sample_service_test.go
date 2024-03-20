@@ -6,6 +6,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	samplev1 "github.com/Mehak2716/sample-manager-proto/v1"
 	"github.com/Mehak2716/sample-manager/internal/repository"
+	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/driver/postgres"
@@ -27,13 +28,20 @@ func setUpSampleServiceTest() (sqlmock.Sqlmock, *SampleService) {
 
 const (
 	testSegment         string = "customer_segment"
-	testProductID       string = "xxxxx"
-	testSampleProductID string = "xxxxx"
+	testProductID       string = "testProductID"
+	testSampleProductID string = "testSampleProductID"
 )
 
 func TestCreatedSampleMappingSuccessfully(t *testing.T) {
 	mock, service := setUpSampleServiceTest()
 	req := &samplev1.SampleMappingRequest{
+		CustomerSegment: testSegment,
+		ProductID:       testProductID,
+		SampleProductID: testSampleProductID,
+	}
+
+	expectedResponse := &samplev1.SampleMappingResponse{
+		ID:              1,
 		CustomerSegment: testSegment,
 		ProductID:       testProductID,
 		SampleProductID: testSampleProductID,
@@ -49,6 +57,7 @@ func TestCreatedSampleMappingSuccessfully(t *testing.T) {
 	mock.ExpectCommit()
 	res, err := service.CreateMapping(req)
 
+	assert.Equal(t, res, expectedResponse)
 	if res == nil {
 		t.Fatalf("Expected response but got nil")
 	}
@@ -91,4 +100,37 @@ func TestCreateDuplicateMappingExpectAlreadyExistError(t *testing.T) {
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %s", err)
 	}
+}
+
+func TestGetSampleIDsSuccessfully(t *testing.T) {
+	mock, service := setUpSampleServiceTest()
+
+	req := &samplev1.GetSampleIDsRequest{
+		CustomerSegments: []string{"segment1", "segment2"},
+		ProductIDs:       []string{"productid1", "productid2"},
+	}
+	expectedResponse := &samplev1.GetSampleIDsResponse{
+		SampleIDs: []string{"sample_product_id_1", "sample_product_id_2"},
+	}
+
+	rows := sqlmock.NewRows([]string{"product_id", "sample_product_id", "customer_segment", "id"}).
+		AddRow("productid1", "sample_product_id_1", "segment1", 1).
+		AddRow("productid2", "sample_product_id_2", "segment2", 2)
+
+	mock.ExpectQuery("SELECT product_id,sample_product_id,customer_segment,id FROM (.+) WHERE rn = 1").
+		WillReturnRows(rows)
+
+	res, err := service.GetSampleIDs(req)
+
+	assert.Equal(t, res, expectedResponse)
+	if res == nil {
+		t.Fatalf("Expected response but got nil")
+	}
+	if err != nil {
+		t.Fatal("Expected error to be nil but got %", err.Error())
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %s", err)
+	}
+
 }

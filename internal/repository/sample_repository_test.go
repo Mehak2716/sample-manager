@@ -84,3 +84,50 @@ func TestIsExistsForNonExistingMappingSuccessfully(t *testing.T) {
 		t.Errorf("Unfulfilled expectations: %s", err)
 	}
 }
+
+func TestFetchSampleIDSForNoSample(t *testing.T) {
+	mock, repo := setUpSampleRepoTest()
+
+	customerSegments := []string{"segment1", "segment2"}
+	productIDs := []string{"productid1", "productid2"}
+
+	rows := sqlmock.NewRows([]string{"product_id", "sample_product_id", "customer_segment", "id"})
+	mock.ExpectQuery("SELECT product_id,sample_product_id,customer_segment,id FROM (.+) WHERE rn = 1").
+		WillReturnRows(rows)
+	result, err := repo.FetchSampleIDs(customerSegments, productIDs)
+
+	if err != nil {
+		t.Fatalf("Error not expected but encountered: %v", err)
+	}
+	if len(result) != 0 {
+		t.Fatalf("Unexpected result")
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %s", err)
+	}
+}
+
+func TestFetchSampleIDSForSamplesPresent(t *testing.T) {
+	mock, repo := setUpSampleRepoTest()
+
+	customerSegments := []string{"segment1", "segment2"}
+	productIDs := []string{"productid1", "productid2"}
+
+	rows := sqlmock.NewRows([]string{"product_id", "sample_product_id", "customer_segment", "id"}).
+		AddRow("productid1", "sample_product_id_1", "segment1", 1).
+		AddRow("productid2", "sample_product_id_2", "segment2", 2)
+
+	mock.ExpectQuery("SELECT product_id,sample_product_id,customer_segment,id FROM (.+) WHERE rn = 1").
+		WillReturnRows(rows)
+	result, err := repo.FetchSampleIDs(customerSegments, productIDs)
+
+	if err != nil {
+		t.Fatalf("Error not expected but encountered: %v", err)
+	}
+	if len(result) != 2 {
+		t.Fatalf("Unexpected result")
+	}
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("Unfulfilled expectations: %s", err)
+	}
+}

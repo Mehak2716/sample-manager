@@ -24,7 +24,7 @@ func MapToSampleMappingResponse(sampleMapping *models.SampleMapping) *samplev1.S
 	}
 }
 
-func MapToSampleIDSResponse(sampleMappings []*models.SampleMapping) *samplev1.GetSampleIDsResponse {
+func MapToSampleIDSResponse(sampleMappings []models.SampleMapping) *samplev1.GetSampleIDsResponse {
 
 	var sampleIDs []string
 	for _, mapping := range sampleMappings {

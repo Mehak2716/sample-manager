@@ -7,10 +7,11 @@ import (
 	"net"
 
 	"github.com/Mehak2716/sample-manager/internal/config"
+	"github.com/Mehak2716/sample-manager/internal/interceptors"
 	"github.com/Mehak2716/sample-manager/internal/repository"
 	server "github.com/Mehak2716/sample-manager/internal/server"
 	"github.com/Mehak2716/sample-manager/internal/services"
-	"github.com/swiggy-private/gocommons/grpc"
+	"google.golang.org/grpc"
 
 	samplev1 "github.com/Mehak2716/sample-manager-proto/v1"
 )
@@ -26,7 +27,9 @@ func Start(ctx context.Context, errch chan<- error) {
 	log.Printf("Listening on %v", grpcPort)
 
 	// Setup grpc server
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(interceptors.ValidateRequestHandler),
+	)
 	db := config.DatabaseConnection()
 	sampleRepo := repository.SampleRepository{DB: db}
 	sampleService := services.SampleService{Repo: sampleRepo}
